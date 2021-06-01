@@ -1,5 +1,6 @@
 import sys
 import pygame
+from settings import Settings
 
 class AlienInvasion:
     """Класс для управления ресурсами и поведением игры"""
@@ -7,9 +8,10 @@ class AlienInvasion:
     def __init__(self):
         """Инициализирует игру и создает игровые ресурсы"""
         pygame.init()
-
-        self.screen = pygame.display.set_mode((1200, 800)) # Создаем экран игры с указанныеми размерами (размер переадем кортежем)
+        self.settings = Settings()
+        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height)) # Создаем экран игры с указанныеми размерами (размер переадем кортежем)
         pygame.display.set_caption("Alien Invasion") # В шапке пишем название игры
+
 
     def run_game(self):
         """Запуск основного цикла игры"""
@@ -18,6 +20,9 @@ class AlienInvasion:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
+
+            # При каждом проходе цикла перерисовывает экран.
+            self.screen.fill(self.settings.bg_color)
 
             # Отображение последнего прорисованного экрана
             pygame.display.flip()
