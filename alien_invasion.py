@@ -2,6 +2,7 @@ import sys
 import pygame
 from settings import Settings
 from ship import Ship
+from bullet import Bullet
 
 class AlienInvasion:
     """Класс для управления ресурсами и поведением игры"""
@@ -18,6 +19,7 @@ class AlienInvasion:
 
         pygame.display.set_caption("Alien Invasion") # В шапке пишем название игры
         self.ship = Ship(self)
+        self.bullets = pygame.sprite.Group()
 
 
     def run_game(self):
@@ -25,10 +27,13 @@ class AlienInvasion:
         while True:
             self._chek_events()
             self.ship.update()
+            self._update_bullets()
             # При каждом проходе цикла перерисовывется экран.
             self._update_screen()
             # Отображение последнего прорисованного экрана
             pygame.display.flip()
+
+
 
     def _chek_events(self):
         """Обрабатывает нажатия клавиш и события мыши."""
@@ -50,6 +55,8 @@ class AlienInvasion:
             self.ship.moving_left = True
         elif event.key == pygame.K_q: # Выход из программы при нажатии клавиши q
             sys.exit()
+        elif event.key == pygame.K_SPACE:
+            self._fire_bullet()
 
     def _check_keyup_events(self, event):
         """Реагирует на отпускание клавишь"""
@@ -58,10 +65,29 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False
 
+    def _fire_bullet(self):
+        """Создание нового снаряда и включение его в группу bullets."""
+        if len(self.bullets) < self.settings.bullets_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
+
+    def _update_bullets(self):
+        """Обновляет позиции снарядов и уничтожает старые снаряды."""
+        # Обновление позиции снаряда
+        self.bullets.update()
+        # Удаление снарядов, вышедших за край экрана.
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
+
     def _update_screen(self):
         """Обновляет изображения на экран и отображеет новый экран"""
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
+
+    # pygame.display.flip()
 
 if __name__ == '__main__':
     # Создание экзепляра и запуск игры
