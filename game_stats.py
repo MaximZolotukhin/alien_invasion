@@ -5,9 +5,15 @@ class GameStats():
         """Инициализирует статистику"""
         self.settings = ai_game.settings
         self.reset_stats()
+
         # Игра запускается в активном состоянии.
-        self.game_active = True
+        self.game_active = False
+
+        # Рекорд должен сбрасываться.
+        self.high_score = 0
 
     def reset_stats(self):
-        """Инициализирует статитскику, изменяющуюся в ходе игры."""
-        self.ship_left = self.settings.ship_limit
+        """Инициализирует статистику, изменяющуюся в ходе игры."""
+        self.ships_left = self.settings.ship_limit
+        self.score = 0
+        self.level = 1
